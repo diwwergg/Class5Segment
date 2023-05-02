@@ -1,8 +1,8 @@
 
-Class5Segment - v1 2023-05-02 7:07pm
+Class5Segment - v1 2023-05-02 11:29pm
 ==============================
 
-This dataset was exported via roboflow.com on May 2, 2023 at 12:10 PM GMT
+This dataset was exported via roboflow.com on May 2, 2023 at 4:31 PM GMT
 
 Roboflow is an end-to-end computer vision platform that helps you
 * collaborate with your team on computer vision projects
@@ -18,7 +18,7 @@ visit https://github.com/roboflow/notebooks
 To find over 100k other datasets and pre-trained models, visit https://universe.roboflow.com
 
 The dataset includes 1500 images.
-Class5segment are annotated in COCO Segmentation format.
+Clas are annotated in COCO Segmentation format.
 
 The following pre-processing was applied to each image:
 * Auto-orientation of pixel data (with EXIF-orientation stripping)
@@ -26,9 +26,8 @@ The following pre-processing was applied to each image:
 The following augmentation was applied to create 3 versions of each source image:
 * 50% probability of horizontal flip
 * 50% probability of vertical flip
-* Randomly crop between 0 and 20 percent of the image
 * Random rotation of between -15 and +15 degrees
-* Random Gaussian blur of between 0 and 2.5 pixels
+* Random Gaussian blur of between 0 and 1.5 pixels
 * Salt and pepper noise was applied to 2 percent of pixels
 
 
