@@ -4,17 +4,20 @@ import time
 import tensorflow as tf
 import keras
 
+# Link load model https://drive.google.com/drive/folders/1-2TtJ4szE9ztFTZ7ZZp_SlaKhV_r2gH2?usp=sharing
 # Path: main.py
 # ENVIRONMENT VARIABLES
 CAMERA_NUMBER = 2
-MODEL = 'Model/yolosegment300ep.h5'
-VIDEO = 'videos/a4.avi'
-WIDTH = 400
-HEIGHT = 400
+# MODEL = 'Model/yolosegment300ep.h5'
+MODEL= 'Model/yolo3000segment300ep.h5'
+# MODEL= 'Model/yolo4500segment550ep.h5'
+VIDEO = 'videos/a8.avi'
+WIDTH = 640
+HEIGHT = 480
 ZONE_SIZE = 400
 
 label_ids = np.array([0, 1, 2, 3, 4])
-label_names = np.array(['10bath', 'airpod', 'allmember', 'eraser', 'fashdrive'])
+label_names = np.array(['10bath', 'airpod', 'allmember', 'eraser', 'flashdrive'])
 onehots = np.array(keras.utils.to_categorical(label_ids))
 print(onehots)
 
@@ -26,12 +29,12 @@ if tf.test.is_gpu_available():
 
 cap = cv2.VideoCapture(CAMERA_NUMBER)
 # cap = cv2.VideoCapture(VIDEO)
-# cap.set(cv2.CAP_PROP_FRAME_WIDTH, WIDTH)
-# cap.set(cv2.CAP_PROP_FRAME_HEIGHT, HEIGHT)
+cap.set(cv2.CAP_PROP_FRAME_WIDTH, WIDTH)
+cap.set(cv2.CAP_PROP_FRAME_HEIGHT, HEIGHT)
 w = (WIDTH-ZONE_SIZE)//2
 h = (HEIGHT-ZONE_SIZE)//2
 zone = [(w,h ), (w+ZONE_SIZE, h+ZONE_SIZE)]
-green_color = (0, 255, 0)
+green_color = (0, 0, 255)
 
 # Load model
 model = keras.models.load_model(MODEL)
@@ -47,10 +50,10 @@ def get_label_by_onehot(onehot):
 
 def predict_by_image(image):
     img = np.array(cv2.resize(image, [256, 256]))
-    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    img[:, :, 0 ] = gray[:, :]
-    img[:, :, 1 ] = gray[:, :]
-    img[:, :, 2 ] = gray[:, :]
+    # gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    # img[:, :, 0 ] = gray[:, :]
+    # img[:, :, 1 ] = gray[:, :]
+    # img[:, :, 2 ] = gray[:, :]
     img = img / 255.0
     cv2.imshow('Predict',img)
     Z_onehots, Z_pts = model.predict(img[None, :, :, :], verbose = 0)
@@ -76,11 +79,13 @@ while True:
         # print(label, Z_pts)
         # [x1, y1, x2, y2] = z2
         # (x3, y3) = (abs(x2-x1)//2, abs(y2-y1)//2 )
-        cv2.rectangle(image, Z_pts, green_color, 1)
-        cv2.putText(image, str(label), (Z_pts[0], Z_pts[1]-10), cv2.FONT_HERSHEY_COMPLEX_SMALL, 1, green_color, 1)
+        cv2.rectangle(image, Z_pts, green_color, 2)
+        cv2.putText(image, str(label), (Z_pts[0], Z_pts[1]-10), cv2.FONT_HERSHEY_COMPLEX_SMALL, 1.5, green_color, 2)
     t2 = time.time()
     fps = round(1/(t2-t1),2)
     cv2.putText(f1, 'FPS: '+str(fps), (20, 20), cv2.FONT_HERSHEY_COMPLEX_SMALL, 1, (0, 0, 255), 1)
+    cv2.putText(f1, str(label), (20, HEIGHT-20), cv2.FONT_HERSHEY_COMPLEX_SMALL, 2, (255, 0, 0), 2)
+
     cv2.imshow('Frame1', f1)
     cv2.imshow('Frame2', image)
     if cv2.waitKey(5) & 0xFF == ord('q'):
